@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EyeSpy - Combat Misinformation with AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght @300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #0a0a0a;
+            --secondary-bg: #1a1a1a;
+            --accent-blue: #00d4ff;
+            --accent-green: #00ff88;
+            --accent-orange: #ff6b35;
+            --text-light: #ffffff;
+            --text-gray: #b0b0b0;
+            --gradient-primary: linear-gradient(135deg, #00d4ff, #00ff88);
+            --gradient-secondary: linear-gradient(135deg, #ff6b35, #00d4ff);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-light);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Animated background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: var(--primary-bg);
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(0, 255, 136, 0.1) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+
+        /* Hero Section */
+       .hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 20px; /* add safe spacing on sides */
+    position: relative;
+    overflow: hidden;
+}
+
+        .hero-content {
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+      .hero h1 {
+    font-size: clamp(2rem, 5vw, 4rem); /* balanced size */
+    line-height: 1.2;                  /* better spacing */
+    word-break: break-word;            /* prevent cut-off */
+    font-weight: 800;
+    margin-bottom: 1rem;
+    background: var(--gradient-primary);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-fill-color: transparent; /* fallback */
+    animation: fadeInUp 1s ease-out;
+}
+
+        .hero .tagline {
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            color: var(--text-gray);
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: var(--gradient-primary);
+            color: var(--primary-bg);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out 0.4s both;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Sections */
+        .section {
+            padding: 100px 0;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: var(--gradient-secondary);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* About Section */
+        .about-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .about-text {
+            font-size: 1.2rem;
+            color: var(--text-gray);
+            margin-bottom: 2rem;
+            animation: fadeIn 1s ease-out;
+        }
+
+        /* Features Section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: var(--secondary-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-primary);
+            opacity: 0.1;
+            transition: left 0.5s ease;
+        }
+
+        .feature-card:hover::before {
+            left: 0;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.2) rotate(360deg);
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+
+        .feature-description {
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        /* Demo Section */
+        .demo-section {
+            background: var(--secondary-bg);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--accent-blue);
+            border-radius: 15px;
+            padding: 3rem;
+            margin: 2rem 0;
+            background: rgba(0, 212, 255, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent-green);
+            background: rgba(0, 255, 136, 0.05);
+            transform: scale(1.02);
+        }
+
+        .upload-text {
+            font-size: 1.2rem;
+            color: var(--text-gray);
+            margin-bottom: 1rem;
+        }
+
+        .demo-result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .result-authentic {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .result-fake {
+            background: rgba(255, 107, 53, 0.1);
+            border: 1px solid var(--accent-orange);
+            color: var(--accent-orange);
+        }
+
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--secondary-bg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            background: var(--accent-blue);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--secondary-bg);
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .social-links {
+            margin: 2rem 0;
+        }
+
+        .social-link {
+            display: inline-block;
+            margin: 0 1rem;
+            padding: 10px;
+            color: var(--text-gray);
+            text-decoration: none;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: var(--accent-blue);
+            background: rgba(0, 212, 255, 0.2);
+            transform: translateY(-5px) rotate(360deg);
+        }
+
+        .newsletter {
+            max-width: 400px;
+            margin: 2rem auto;
+            display: flex;
+            gap: 10px;
+        }
+
+        .newsletter input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            background: var(--primary-bg);
+            color: var(--text-light);
+        }
+
+        .newsletter button {
+            padding: 12px 20px;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 25px;
+            color: var(--primary-bg);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter button:hover {
+            transform: scale(1.1);
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-gray);
+            border-top: 2px solid var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .section {
+                padding: 50px 0;
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .demo-section {
+                padding: 2rem 1rem;
+            }
+
+            .newsletter {
+                flex-direction: column;
+            }
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Navbar */
+.navbar {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: rgba(10, 10, 10, 0.9); /* semi-transparent dark */
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 1000;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Logo */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Nav Links */
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-light);
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--accent-blue);
+}
+
+/* CTA Button */
+.nav-cta {
+    padding: 10px 20px;
+    background: var(--gradient-primary);
+    color: var(--primary-bg);
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.nav-cta:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 212, 255, 0.3);
+}
+
+/* Add top padding so hero isn't hidden behind navbar */
+.hero {
+    padding-top: 80px; 
+}
+/* Footer */
+.footer {
+    background: var(--secondary-bg);
+    padding: 4rem 2rem 2rem;
+    color: var(--text-gray);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Brand Section */
+.footer-brand .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+}
+
+.footer-brand p {
+    line-height: 1.6;
+}
+
+/* Quick Links */
+.footer-links h3,
+.footer-newsletter h3 {
+    color: var(--text-light);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.footer-links a {
+    display: block;
+    color: var(--text-gray);
+    margin-bottom: 0.5rem;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: var(--accent-blue);
+}
+
+/* Newsletter */
+.newsletter-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 1rem;
+}
+
+.newsletter-form input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--primary-bg);
+    color: var(--text-light);
+}
+
+.newsletter-form button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    background: var(--gradient-primary);
+    color: var(--primary-bg);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.newsletter-form button:hover {
+    transform: scale(1.05);
+}
+
+/* Footer Bottom */
+.footer-bottom {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.footer-bottom p {
+    font-size: 0.9rem;
+}
+
+.social-icons a {
+    margin-left: 10px;
+    text-decoration: none;
+    color: var(--text-gray);
+    font-size: 1.2rem;
+    transition: color 0.3s, transform 0.3s;
+}
+
+.social-icons a:hover {
+    color: var(--accent-blue);
+    transform: translateY(-3px);
+}
+/* === Footer Brand Alignment (like screenshot) === */
+.footer-brand {
+    display: flex;
+    flex-direction: column;   /* stack logo row above paragraph */
+    align-items: flex-start;  /* keep everything left aligned */
+    text-align: left;
+    gap: 0.75rem;
+}
+
+.footer-brand .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.footer-bottom {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;   /* center the text */
+    display: block;       /* override flex */
+}
+
+.footer-bottom p {
+    font-size: 0.9rem;
+    margin: 0 auto;
+}
+
+
+    </style>
+</head>
+<body>
+    <!-- Header / Navbar -->
+<header class="navbar">
+    <div class="nav-container">
+        <!-- Logo -->
+        <div class="logo">
+            <span style="font-size: 1.5rem;">👁️</span>
+            <span class="logo-text">EyeSpy</span>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="nav-links">
+            <a href="#about">About</a>
+            <a href="#features">Features</a>
+            <a href="#demo">Demo</a>
+            <a href="#contact">Contact</a>
+        </nav>
+
+        <!-- CTA Button -->
+        <a href="#demo" class="nav-cta">Try EyeSpy</a>
+    </div>
+</header>
+
+    <div class="bg-animation"></div>
+    
+    <div class="theme-toggle" onclick="toggleTheme()">
+        🌓
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Combat Misinformation with AI-Powered Detection</h1>
+            <p class="tagline">A cutting-edge multimodal system for detecting fake news and manipulated content</p>
+            <a href="#demo" class="cta-button">Try EyeSpy</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section fade-in">
+        <h2 class="section-title">Advanced AI Detection</h2>
+        <div class="about-content">
+            <p class="about-text">
+                EyeSpy leverages state-of-the-art artificial intelligence to analyze text, images, and multimedia content for signs of manipulation and misinformation. Our advanced algorithms combine natural language processing with computer vision to provide comprehensive content verification.
+            </p>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <!-- Features Section -->
+<section class="section fade-in" id="features">
+    <h2 class="section-title">Key Features</h2>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">🔍</span>
+                <h3 class="feature-title">Text Analysis</h3>
+                <p class="feature-description">Advanced NLP algorithms detect linguistic patterns, sentiment manipulation, and factual inconsistencies in written content.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🖼️</span>
+                <h3 class="feature-title">Image Forensics</h3>
+                <p class="feature-description">Sophisticated computer vision techniques identify digital manipulation, deepfakes, and tampered visual content.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🧠</span>
+                <h3 class="feature-title">Multimodal Fusion</h3>
+                <p class="feature-description">Combines multiple detection methods for comprehensive analysis, providing higher accuracy and confidence scores.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">⚡</span>
+                <h3 class="feature-title">Real-time Processing</h3>
+                <p class="feature-description">Lightning-fast analysis delivers results in seconds, enabling rapid response to emerging misinformation.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🛡️</span>
+                <h3 class="feature-title">Trust Score</h3>
+                <p class="feature-description">Provides detailed confidence metrics and explainable AI insights for transparent decision-making.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🌐</span>
+                <h3 class="feature-title">Global Database</h3>
+                <p class="feature-description">Cross-references content against a continuously updated database of known misinformation patterns.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+  <!-- Demo Section -->
+<section class="section fade-in" id="demo">
+    <h2 class="section-title">Try EyeSpy</h2>
+    <div class="demo-section">
+        <p class="about-text">Upload content or paste a URL/text to test our AI detection system</p>
+
+        <!-- Upload Area -->
+        <div class="upload-area">
+            <input type="file" id="fileInput" accept="image/*" hidden>
+            <label for="fileInput" style="cursor: pointer; display: block;">
+                <div class="upload-text">
+                    <strong>📤 Upload an Image</strong><br>
+                    Drop files here or click to upload
+                </div>
+            </label>
+        </div>
+
+        <!-- OR Divider -->
+        <p style="margin: 2rem 0; color: var(--text-gray); font-weight: 600;">OR</p>
+
+        <!-- Text Input Area -->
+        <div class="text-analysis">
+            <label for="textInput" style="font-weight: 600; display: block; margin-bottom: 10px; color: var(--accent-blue);">
+                📝 Enter Text to Analyze
+            </label>
+            <textarea id="textInput" rows="5" placeholder="Paste news article, social media post, or any text content here..."
+                style="width: 100%; border-radius: 10px; padding: 15px; background: var(--secondary-bg); color: var(--text-light); border: 1px solid rgba(255,255,255,0.2);"></textarea>
+            <button id="analyzeTextBtn" class="cta-button" style="margin-top: 15px;">Analyze with EyeSpy</button>
+        </div>
+
+        <!-- Result Display -->
+        <div id="demoResult" class="demo-result">
+            <div class="loading" id="loadingSpinner" style="display: none;"></div>
+            <div id="resultText"></div>
+        </div>
+    </div>
+</section>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer class="footer">
+    <div class="footer-container">
+        <!-- Left Section: Logo + Description -->
+        <div class="footer-brand">
+            <div class="logo">
+                <span style="font-size: 1.5rem;">👁️</span>
+                <span class="logo-text">EyeSpy</span>
+            </div>
+            <p>
+                Advanced AI-powered misinformation detection system protecting individuals and organizations from fake news and manipulated content.
+            </p>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-links">
+            <h3>Quick Links</h3>
+            <a href="#about">About</a>
+            <a href="#features">Features</a>
+            <a href="#demo">Demo</a>
+            <a href="#contact">Contact</a>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="footer-newsletter">
+            <h3>Stay Informed</h3>
+            <p>Get the latest updates on AI security and misinformation detection</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="footer-bottom">
+        <p>© 2025 EyeSpy. All rights reserved. | Protecting truth with artificial intelligence.</p>
+        <!-- <div class="social-icons">
+            <a href="#"><i>🅾</i></a>
+            <a href="#"><i>⤫</i></a>
+            <a href="#"><i>ⓕ</i></a>
+        </div>-->
+    </div>
+</footer>
+
+
+    <script>
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Theme toggle function
+        function toggleTheme() {
+            const root = document.documentElement;
+            const currentBg = getComputedStyle(root).getPropertyValue('--primary-bg');
+            
+            if (currentBg.trim() === '#0a0a0a') {
+                // Switch to light theme
+                root.style.setProperty('--primary-bg', '#f5f5f5');
+                root.style.setProperty('--secondary-bg', '#ffffff');
+                root.style.setProperty('--text-light', '#0a0a0a');
+                root.style.setProperty('--text-gray', '#666666');
+            } else {
+                // Switch back to dark theme
+                root.style.setProperty('--primary-bg', '#0a0a0a');
+                root.style.setProperty('--secondary-bg', '#1a1a1a');
+                root.style.setProperty('--text-light', '#ffffff');
+                root.style.setProperty('--text-gray', '#b0b0b0');
+            }
+        }
+
+        // Demo simulation
+        function simulateDemo() {
+            const resultDiv = document.getElementById('demoResult');
+            const resultText = document.getElementById('resultText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            
+            // Show loading
+            resultDiv.style.display = 'block';
+            loadingSpinner.style.display = 'inline-block';
+            resultText.innerHTML = 'Analyzing content...';
+            resultDiv.className = 'demo-result';
+            
+            // Simulate analysis delay
+            setTimeout(() => {
+                loadingSpinner.style.display = 'none';
+                
+                // Random result for demo
+                const isAuthentic = Math.random() > 0.5;
+                
+                if (isAuthentic) {
+                    resultDiv.classList.add('result-authentic');
+                    resultText.innerHTML = `
+                        <strong>✅ Content appears authentic</strong><br>
+                        Confidence Score: ${(85 + Math.random() * 10).toFixed(1)}%<br>
+                        <small>No signs of manipulation detected</small>
+                    `;
+                } else {
+                    resultDiv.classList.add('result-fake');
+                    resultText.innerHTML = `
+                        <strong>⚠️ Potential misinformation detected</strong><br>
+                        Confidence Score: ${(75 + Math.random() * 20).toFixed(1)}%<br>
+                        <small>Suspicious patterns found in content</small>
+                    `;
+                }
+            }, 2000);
+        }
+
+        // Smooth scrolling for CTA button
+        document.querySelector('.cta-button').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector('#demo').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+
+        // Add parallax effect to hero background
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.bg-animation');
+            const speed = scrolled * 0.5;
+            parallax.style.transform = `translateY(${speed}px)`;
+        });
+
+        // Newsletter form handling
+        document.querySelector('.newsletter button').addEventListener('click', function(e) {
+            e.preventDefault();
+            const email = document.querySelector('.newsletter input').value;
+            if (email) {
+                this.innerHTML = 'Subscribed! ✅';
+                this.style.background = 'var(--accent-green)';
+                setTimeout(() => {
+                    this.innerHTML = 'Subscribe';
+                    this.style.background = 'var(--gradient-primary)';
+                }, 3000);
+            }
+        });
+        // Handle real file upload
+document.getElementById('fileInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        analyzeImage(file);
+    }
+});
+
+// Function to analyze image via API
+async function analyzeImage(file) {
+    const resultDiv = document.getElementById('demoResult');
+    const resultText = document.getElementById('resultText');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+
+    resultDiv.style.display = 'block';
+    loadingSpinner.style.display = 'inline-block';
+    resultText.innerHTML = `Analyzing ${file.name}...`;
+    resultDiv.className = 'demo-result';
+
+    try {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const response = await fetch('http://localhost:5000/api/analyze-image', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+        loadingSpinner.style.display = 'none';
+
+        if (data.success) {
+            const result = data.result;
+            const cacheStatus = data.cached ? ' (Cached)' : ' (Live Analysis)';
+            
+            if (result.is_authentic) {
+                resultDiv.classList.add('result-authentic');
+                resultText.innerHTML = `
+                    <strong>✅ Image appears authentic${cacheStatus}</strong><br>
+                    Confidence Score: ${result.confidence_score}%<br>
+                    <small>No signs of manipulation detected</small>
+                `;
+            } else {
+                resultDiv.classList.add('result-fake');
+                resultText.innerHTML = `
+                    <strong>⚠️ Potential manipulation detected${cacheStatus}</strong><br>
+                    Confidence Score: ${result.confidence_score}%<br>
+                    <small>Manipulation probability: ${result.manipulation_probability}%</small>
+                `;
+            }
+        } else {
+            throw new Error(data.error || 'Analysis failed');
+        }
+    } catch (error) {
+        loadingSpinner.style.display = 'none';
+        resultDiv.classList.add('result-fake');
+        resultText.innerHTML = `
+            <strong>❌ Analysis Error</strong><br>
+            <small>Could not connect to backend. Make sure the server is running.</small>
+        `;
+        console.error('Error:', error);
+    }
+}
+// Handle text analysis
+document.getElementById('analyzeTextBtn').addEventListener('click', function() {
+    const text = document.getElementById('textInput').value.trim();
+    if (text) {
+        analyzeText(text);
+    }
+});
+
+// Function to analyze text via API
+async function analyzeText(text) {
+    const resultDiv = document.getElementById('demoResult');
+    const resultText = document.getElementById('resultText');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+
+    resultDiv.style.display = 'block';
+    loadingSpinner.style.display = 'inline-block';
+    resultText.innerHTML = 'Analyzing text content...';
+    resultDiv.className = 'demo-result';
+
+    try {
+        const response = await fetch('http://localhost:5000/api/predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ text: text })
+        });
+
+        const data = await response.json();
+        loadingSpinner.style.display = 'none';
+
+        if (data.success) {
+            const result = data.result;
+            const cacheStatus = data.cached ? ' (Cached)' : ' (Live Analysis)';
+            
+            if (result.is_authentic) {
+                resultDiv.classList.add('result-authentic');
+                resultText.innerHTML = `
+                    <strong>✅ Text appears authentic${cacheStatus}</strong><br>
+                    Confidence Score: ${result.confidence_score}%<br>
+                    <small>No signs of misinformation detected</small>
+                `;
+            } else {
+                resultDiv.classList.add('result-fake');
+                resultText.innerHTML = `
+                    <strong>⚠️ Potential misinformation detected${cacheStatus}</strong><br>
+                    Confidence Score: ${result.confidence_score}%<br>
+                    <small>Fake news probability: ${result.fake_probability}%</small>
+                `;
+            }
+        } else {
+            throw new Error(data.error || 'Analysis failed');
+        }
+    } catch (error) {
+        loadingSpinner.style.display = 'none';
+        resultDiv.classList.add('result-fake');
+        resultText.innerHTML = `
+            <strong>❌ Analysis Error</strong><br>
+            <small>Could not connect to backend. Make sure the server is running.</small>
+        `;
+        console.error('Error:', error);
+    }
+}
+
+    </script>
+</body>
+</html>

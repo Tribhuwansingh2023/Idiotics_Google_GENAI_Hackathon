@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>EyeSpy Test</title>
+</head>
+<body>
+    <h1>EyeSpy API Test</h1>
+    
+    <h2>Text Analysis</h2>
+    <textarea id="textInput" placeholder="Enter text to analyze..."></textarea><br>
+    <button onclick="testText()">Test Text Analysis</button>
+    
+    <h2>Image Analysis</h2>
+    <input type="file" id="imageInput" accept="image/*">
+    <button onclick="testImage()">Test Image Analysis</button>
+    
+    <h2>Results</h2>
+    <div id="results"></div>
+
+    <script>
+        async function testText() {
+            const text = document.getElementById('textInput').value;
+            const results = document.getElementById('results');
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/analyze-text', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text })
+                });
+                
+                const data = await response.json();
+                results.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                results.innerHTML = 'Error: ' + error.message;
+            }
+        }
+        
+        async function testImage() {
+            const file = document.getElementById('imageInput').files[0];
+            const results = document.getElementById('results');
+            
+            if (!file) {
+                results.innerHTML = 'Please select an image first';
+                return;
+            }
+            
+            try {
+                const formData = new FormData();
+                formData.append('image', file);
+                
+                const response = await fetch('http://localhost:5000/api/analyze-image', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                results.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                results.innerHTML = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
